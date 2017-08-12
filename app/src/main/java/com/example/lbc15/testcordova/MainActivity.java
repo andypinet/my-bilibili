@@ -1,5 +1,6 @@
 package com.example.lbc15.testcordova;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;
@@ -11,11 +12,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.example.lbc15.testcordova.components.AnuWebview;
+import com.example.lbc15.testcordova.utils.Logger;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,14 +29,21 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                Logger.i("drawer opened");
+            }
+        };
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         PageFragmentPagerAdapter adapter = new PageFragmentPagerAdapter(getSupportFragmentManager(),
@@ -47,8 +59,10 @@ public class MainActivity extends AppCompatActivity
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
+            Logger.i("close drawer");
             drawer.closeDrawer(GravityCompat.START);
         } else {
+            Logger.i("on Back");
             super.onBackPressed();
         }
     }
@@ -75,11 +89,13 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        Intent intent = null;
 
         if (id == R.id.nav_camera) {
             // Handle the camera action
@@ -88,7 +104,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_slideshow) {
 
         } else if (id == R.id.nav_manage) {
-
+            Logger.i("start tool activity");
+            intent = new Intent(getApplicationContext(), ToolActivity.class);
         } else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {
@@ -97,6 +114,10 @@ public class MainActivity extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        if (intent != null) {
+            startActivity(intent);
+            return false;
+        }
         return true;
     }
 }
