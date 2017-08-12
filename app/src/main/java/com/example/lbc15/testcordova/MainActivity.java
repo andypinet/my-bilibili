@@ -17,8 +17,6 @@ import com.example.lbc15.testcordova.components.AnuWebview;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private AnuWebview webView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,9 +32,6 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-//        webView = (AnuWebview) findViewById(R.id.mainwebview);
-//        webView.loadUrl("https://www.zhilizhili.com");
 
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
         PageFragmentPagerAdapter adapter = new PageFragmentPagerAdapter(getSupportFragmentManager(),
