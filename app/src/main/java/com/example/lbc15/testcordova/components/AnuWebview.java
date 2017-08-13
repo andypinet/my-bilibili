@@ -5,9 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
-import android.webkit.JsResult;
 import android.webkit.ValueCallback;
-import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
@@ -94,14 +92,6 @@ public class AnuWebview extends WebView {
         };
 
         this.setWebViewClient(webviewClient);
-
-//        this.setWebChromeClient(new WebChromeClient() {
-//            @Override
-//            public boolean onJsAlert(WebView view, String url, String message, final JsResult result) {
-//                Logger.i("call alert fun" + message);
-//                return super.onJsAlert(view, url, message, result);
-//            }
-//        });
 
     }
 
