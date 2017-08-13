@@ -43,7 +43,7 @@ public class PageFragment extends Fragment {
         if (mPage == 1) {
             view = inflater.inflate(R.layout.fragment_page,container,false);
             webView = (AnuWebview) view.findViewById(R.id.mainwebview);
-            webView.loadUrl("https://www.zhilizhili.com");
+            webView.loadUrl("file:///android_asset/www/index.html");
         } else {
             view = inflater.inflate(R.layout.fragment_native,container,false);
             TextView textView = (TextView) view.findViewById(R.id.textView);
