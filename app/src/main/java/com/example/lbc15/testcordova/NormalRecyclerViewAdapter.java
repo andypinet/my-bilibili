@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.lbc15.testcordova.utils.Logger;
 
 import java.util.HashMap;
@@ -36,38 +37,42 @@ public class NormalRecyclerViewAdapter extends RecyclerView.Adapter<NormalRecycl
         return new NormalTextViewHolder(mLayoutInflater.inflate(R.layout.item_text, parent, false));
     }
 
-    private Handler handle = new Handler() {
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case 0:
-                    HashMap h = (HashMap) msg.obj;
-                    NormalTextViewHolder holder = (NormalTextViewHolder) h.get("holder");
-                    Bitmap bmp = (Bitmap) h.get("bmp");
-                    holder.mImageView.setImageBitmap(bmp);
-                    break;
-            }
-        };
-    };
+//    private Handler handle = new Handler() {
+//        public void handleMessage(Message msg) {
+//            switch (msg.what) {
+//                case 0:
+//                    HashMap h = (HashMap) msg.obj;
+//                    NormalTextViewHolder holder = (NormalTextViewHolder) h.get("holder");
+//                    Bitmap bmp = (Bitmap) h.get("bmp");
+//                    holder.mImageView.setImageBitmap(bmp);
+//                    break;
+//            }
+//        };
+//    };
 
     @Override
     public void onBindViewHolder(final NormalTextViewHolder holder, int position) {
         holder.mTextView.setText(mTitles[position] + "1");
 
         // 获取图片
-        new Thread(new Runnable() {
+//        new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//            HashMap<String, Object> h = new HashMap();
+//            Bitmap bmp = ImageLoader.getURLimage("http://imgstore04.cdn.sogou.com/app/a/100520024/877e990117d6a7ebc68f46c5e76fc47a");
+//            h.put("bmp", bmp);
+//            h.put("holder", holder);
+//            Message msg = new Message();
+//            msg.what = 0;
+//            msg.obj = h;
+//            handle.sendMessage(msg);
+//            }
+//        }).start();
 
-            @Override
-            public void run() {
-            HashMap<String, Object> h = new HashMap();
-            Bitmap bmp = ImageLoader.getURLimage("http://imgstore04.cdn.sogou.com/app/a/100520024/877e990117d6a7ebc68f46c5e76fc47a");
-            h.put("bmp", bmp);
-            h.put("holder", holder);
-            Message msg = new Message();
-            msg.what = 0;
-            msg.obj = h;
-            handle.sendMessage(msg);
-            }
-        }).start();
+        GlideApp.with(mContext)
+                .load("http://imgstore04.cdn.sogou.com/app/a/100520024/877e990117d6a7ebc68f46c5e76fc47a")
+                .into(holder.mImageView);
     }
 
     @Override
