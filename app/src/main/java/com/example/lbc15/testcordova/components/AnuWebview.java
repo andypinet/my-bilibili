@@ -76,13 +76,13 @@ public class AnuWebview extends WebView {
             this.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         }
 
-        this.webviewClient = new AuiWebClient() {
+        webviewClient = new AuiWebClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                Logger.i("on Page Finished");
-                Toast.makeText(context, "load Page Finished", Toast.LENGTH_SHORT).show();
-                self.initJavscript();
+//                Logger.i("on Page Finished");
+//                Toast.makeText(context, "load Page Finished", Toast.LENGTH_SHORT).show();
+//                self.initPageSelected();
             }
 
             @Override
@@ -95,12 +95,12 @@ public class AnuWebview extends WebView {
 
     }
 
-    private void initJavscript() {
+    public void initPageSelected() {
         this.evaluateJavascript("javascript:callJS()", new ValueCallback<String>() {
             @Override
             public void onReceiveValue(String value) {
-                //此处为 js 返回的结果
-                Logger.i("calljs "+value);
+            //此处为 js 返回的结果
+            Logger.i("calljs "+value);
             }
         });
     }

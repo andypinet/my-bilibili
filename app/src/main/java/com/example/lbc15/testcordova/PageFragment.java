@@ -4,12 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.example.lbc15.testcordova.components.AnuWebview;
-import com.example.lbc15.testcordova.utils.Logger;
 
 /**
  * Created by lbc15 on 2017/8/12.
@@ -18,7 +17,7 @@ import com.example.lbc15.testcordova.utils.Logger;
 public class PageFragment extends Fragment {
     public static final String ARGS_PAGE = "args_page";
     private int mPage;
-    private AnuWebview webView;
+    private Boolean isFirstInit = false;
 
     public static PageFragment newInstance(int page) {
         Bundle args = new Bundle();
@@ -42,13 +41,19 @@ public class PageFragment extends Fragment {
 //        第一页 mPage = 1
         if (mPage == 1) {
             view = inflater.inflate(R.layout.fragment_page,container,false);
-            webView = (AnuWebview) view.findViewById(R.id.mainwebview);
+            AnuWebview webView = (AnuWebview) view.findViewById(R.id.mainwebview);
             webView.loadUrl("file:///android_asset/www/index.html");
+        } else if (mPage == 2) {
+            view = inflater.inflate(R.layout.fragment_main,container,false);
         } else {
             view = inflater.inflate(R.layout.fragment_native,container,false);
-            TextView textView = (TextView) view.findViewById(R.id.textView);
-            textView.setText("Native 第"+mPage+"页");
         }
+        PageFragmenManager.onCreateView(mPage - 1, view, inflater, container, savedInstanceState);
         return view;
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        return super.onContextItemSelected(item);
     }
 }

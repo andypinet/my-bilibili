@@ -1,30 +1,36 @@
 package com.example.lbc15.testcordova;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.example.lbc15.testcordova.components.AnuWebview;
 import com.example.lbc15.testcordova.utils.Logger;
-import com.roughike.bottombar.BottomBar;
-import com.roughike.bottombar.OnTabSelectListener;
 
 import java.util.HashMap;
+import java.util.Objects;
+
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -54,13 +60,18 @@ public class MainActivity extends AppCompatActivity
 
     private String LastPageId = "page1";
     private HashMap<String, FrameLayout> pages;
+    private TabLayout mainTabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        final Context self = this;
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -77,16 +88,53 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        mainTabLayout = (TabLayout) findViewById(R.id.main_table_layout);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
-        PageFragmentPagerAdapter adapter = new PageFragmentPagerAdapter(getSupportFragmentManager(),
+        final ViewPager viewPager = (ViewPager) findViewById(R.id.viewPager);
+        final PageFragmentPagerAdapter adapter = new PageFragmentPagerAdapter(getSupportFragmentManager(),
                 this);
         viewPager.setAdapter(adapter);
 
-        //TabLayout
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.table_layout);
-        tabLayout.setupWithViewPager(viewPager);
-        tabLayout.getTabAt(1).select();
+        mainTabLayout.setupWithViewPager(viewPager);
+        mainTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                int position = tab.getPosition();
+                Fragment currentFragment = adapter.getRegisteredFragment(position);
+                if (currentFragment != null) {
+                    View view = currentFragment.getView();
+                    if (view != null) {
+                        MainFragmentFragmentManager.initView(position, view, self);
+                    }
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+                Logger.i("tab unselected");
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+                Logger.i("tab relected");
+            }
+        });
+
+
+        PageFragmenManager.listerner = new PageFragmenManagerListener() {
+            @Override
+            public void onCreateView(Boolean isFirstInit, int position, View view, LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+                Logger.i("isFirstInit " + isFirstInit +" Position " + position + " view " + view.findViewById(R.id.textView));
+
+                if (!isFirstInit) {
+                    if (position == 1) {
+                        MainFragmentFragmentManager.initMainPage(position, view, self);
+                    }
+                }
+            }
+        };
+
+        mainTabLayout.getTabAt(1).select();
 
         pages = new HashMap<String, FrameLayout>();
         pages.put("page1", (FrameLayout) findViewById(R.id.page1));
@@ -95,7 +143,7 @@ public class MainActivity extends AppCompatActivity
 
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        
+
     }
 
     private void selectPage(String id) {
